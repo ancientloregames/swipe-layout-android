@@ -27,31 +27,12 @@ public class SwipeLayoutManager
 	{
 		layouts.put(id, swipeLayout);
 
-		swipeLayout.setOnSwipeListener(new SwipeLayout.OnSwipeListener() {
-
+		swipeLayout.setOnSwipeListener(new SwipeLayout.SimpleSwipeListener() {
 			@Override
 			public void onBeginSwipe(SwipeLayout swipeLayout, boolean moveToRight)
 			{
 				if (openOnlyOne)
 					closeOthers(swipeLayout, true);
-			}
-
-			@Override
-			public void onSwipeClampReached(SwipeLayout swipeLayout, boolean moveToRight)
-			{
-
-			}
-
-			@Override
-			public void onLeftStickyEdge(SwipeLayout swipeLayout, boolean moveToRight)
-			{
-
-			}
-
-			@Override
-			public void onRightStickyEdge(SwipeLayout swipeLayout, boolean moveToRight)
-			{
-
 			}
 		});
 	}

@@ -1,5 +1,6 @@
 package ru.rambler.libs.swipe_layout;
 
+import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,7 +8,7 @@ import java.util.Map;
 
 public class SwipeLayoutManager
 {
-	private Map<String, SwipeLayout> layouts = Collections.synchronizedMap(new HashMap<String, SwipeLayout>());
+	private Map<String, WeakReference<SwipeLayout>> layouts = Collections.synchronizedMap(new HashMap<String, WeakReference<SwipeLayout>>());
 
 	private final Object syncObject = new Object();
 
@@ -25,7 +26,7 @@ public class SwipeLayoutManager
 
 	public void bind(SwipeLayout swipeLayout, String id)
 	{
-		layouts.put(id, swipeLayout);
+		layouts.put(id, new WeakReference<>(swipeLayout));
 
 		swipeLayout.setOnSwipeListener(new SwipeLayout.SimpleSwipeListener() {
 			@Override
@@ -41,9 +42,11 @@ public class SwipeLayoutManager
 	{
 		synchronized (syncObject)
 		{
-			for (SwipeLayout layout: layouts.values())
+			for (WeakReference<SwipeLayout> layoutRef: layouts.values())
 			{
-				reset(layout, animate);
+				SwipeLayout layout = layoutRef.get();
+				if (layout != null)
+					reset(layout, animate);
 			}
 		}
 	}
@@ -60,9 +63,13 @@ public class SwipeLayoutManager
 	{
 		synchronized (syncObject)
 		{
-			SwipeLayout layout = layouts.get(id);
-			if (layout != null)
-				reset(layout, animate);
+		WeakReference<SwipeLayout> layoutRef = layouts.get(id);
+			if (layoutRef != null)
+			{
+				SwipeLayout layout = layoutRef.get();
+				if (layout != null)
+					reset(layout, animate);
+			}
 		}
 	}
 
@@ -70,8 +77,9 @@ public class SwipeLayoutManager
 	{
 		synchronized (syncObject)
 		{
-			for (SwipeLayout layout: layouts.values())
+			for (WeakReference<SwipeLayout> layoutRef: layouts.values())
 			{
+				SwipeLayout layout = layoutRef.get();
 				if (layout != excludedLayout)
 					reset(layout, animate);
 			}

@@ -11,6 +11,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import ru.rambler.libs.swipe_layout.SwipeLayout;
+import ru.rambler.libs.swipe_layout.SwipeLayoutManager;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
 
         private final int COUNT = 30;
         private final int[] itemsOffset = new int[COUNT];
+
+        private final SwipeLayoutManager swipeLayoutManager = new SwipeLayoutManager(true);
 
         @Override
         public int getItemViewType(int position) {
@@ -103,8 +107,11 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.textViewPos.setText("#" + (position + 1));
+            String uniqueId = "#" + (position + 1);
+            holder.textViewPos.setText(uniqueId);
             holder.swipeLayout.setOffset(itemsOffset[position]);
+
+            swipeLayoutManager.bind(holder.swipeLayout, uniqueId);
         }
 
         @Override
